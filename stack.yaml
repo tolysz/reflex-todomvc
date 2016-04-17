@@ -1,15 +1,15 @@
 flags: {}
 
-resolver: nightly-2016-04-16
-compiler: ghcjs-0.2.0.820160416_ghc-7.10.3
+resolver: nightly-2016-04-17
+compiler: ghcjs-0.2.0.820160417_ghc-7.10.3
 
 compiler-check: match-exact
 
 setup-info:
   ghcjs:
     source:
-      ghcjs-0.2.0.820160416_ghc-7.10.3:
-         url: "https://tolysz.org/ghcjs/nightly-2016-04-16-820160416.tar.gz"
+      ghcjs-0.2.0.820160417_ghc-7.10.3:
+         url: "https://tolysz.org/ghcjs/nightly-2016-04-17-820160417.tar.gz"
 
 allow-newer: true
 
