@@ -1,47 +1,34 @@
-# For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
-compiler: ghcjs-0.2.0.20151029_ghc-7.10.2
-compiler-check: match-exact
-setup-info:
-  ghcjs:
-      source:
-            ghcjs-0.2.0.20151029_ghc-7.10.2:
-                    url: "https://github.com/nrolland/ghcjs/releases/download/v0.2.0.20151029/ghcjs-0.2.0.20151029.tar.gz"
-
-# Specifies the GHC version and set of packages available (e.g., lts-3.5, nightly-2015-09-21, ghc-7.10.2)
-resolver: lts-3.13
-
-# Local packages, usually specified by relative directory name
-packages:
-- '.'
-- location:
-    git: git@github.com:ryantrinkle/reflex-dom.git
-    commit: f4dbdd799260bc203f7f5cdce18362cb896f6d57
-  extra-dep: true
-
-# Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
-extra-deps:
-- ghcjs-dom-0.2.3.0
-- ref-tf-0.4
-- reflex-0.3.2
-- these-0.6.1.0
-
-# Override default flag values for local packages and extra-deps
 flags: {}
 
-# Extra package databases containing global packages
-extra-package-dbs: []
+resolver: nightly-2016-04-16
+compiler: ghcjs-0.2.0.820160416_ghc-7.10.3
 
-# Control whether we use the GHC we find on the path
-# system-ghc: true
+compiler-check: match-exact
 
-# Require a specific version of stack, using version ranges
-# require-stack-version: -any # Default
-# require-stack-version: >= 0.1.4.0
+setup-info:
+  ghcjs:
+    source:
+      ghcjs-0.2.0.820160416_ghc-7.10.3:
+         url: "https://tolysz.org/ghcjs/nightly-2016-04-16-820160416.tar.gz"
 
-# Override the architecture used by stack, especially useful on Windows
-# arch: i386
-# arch: x86_64
+allow-newer: true
 
-# Extra directories used by stack for building
-# extra-include-dirs: [/path/to/dir]
-# extra-lib-dirs: [/path/to/dir]
+packages:
+- location: '.'
+- location:
+    git: https://github.com/ryantrinkle/reflex.git
+    commit: 3a7fb30dde160bc31c0bba4f42f7666ea6ca054a
+  extra-dep: true
+- location:
+    git: https://github.com/tolysz/reflex-dom.git
+    commit: 5318d581fe3ef7b2b0f70ac352d6c56700124b98
+  extra-dep: true
+- location:
+     git: https://github.com/isomorphism/these.git
+     commit: cf68c46bd049d23938f351da5618e9a09ef1102c
+
+extra-deps:
+  - ref-tf-0.4
+  - these-0.6.1.0
+  - ghcjs-dom-0.2.3.0
+  - stateWriter-0.2.6
