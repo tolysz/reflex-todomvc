@@ -1,15 +1,15 @@
 flags: {}
 
-resolver: nightly-2016-04-18
-compiler: ghcjs-0.2.0.820160418_ghc-7.10.3
+resolver: nightly-2016-04-20
+compiler: ghcjs-0.2.0.820160420_ghc-7.10.3
 
 compiler-check: match-exact
 
 setup-info:
   ghcjs:
     source:
-      ghcjs-0.2.0.820160418_ghc-7.10.3:
-         url: "https://tolysz.org/ghcjs/nightly-2016-04-18-820160418.tar.gz"
+      ghcjs-0.2.0.820160420_ghc-7.10.3:
+         url: "https://tolysz.org/ghcjs/nightly-2016-04-18-820160420.tar.gz"
 
 allow-newer: true
 
@@ -23,9 +23,9 @@ packages:
     git: https://github.com/tolysz/reflex-dom.git
     commit: 5318d581fe3ef7b2b0f70ac352d6c56700124b98
   extra-dep: true
-- location:
-     git: https://github.com/isomorphism/these.git
-     commit: cf68c46bd049d23938f351da5618e9a09ef1102c
+#- location:
+#     git: https://github.com/isomorphism/these.git
+#     commit: cf68c46bd049d23938f351da5618e9a09ef1102c
 
 extra-deps:
   - ref-tf-0.4
