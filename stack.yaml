@@ -23,9 +23,9 @@ packages:
     git: https://github.com/tolysz/reflex-dom.git
     commit: 5318d581fe3ef7b2b0f70ac352d6c56700124b98
   extra-dep: true
-#- location:
-#     git: https://github.com/isomorphism/these.git
-#     commit: cf68c46bd049d23938f351da5618e9a09ef1102c
+- location:
+     git: https://github.com/isomorphism/these.git
+     commit: cf68c46bd049d23938f351da5618e9a09ef1102c
 
 extra-deps:
   - ref-tf-0.4
