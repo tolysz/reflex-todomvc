@@ -3,9 +3,12 @@
 stack --stack-yaml stack-base.yaml setup
 PATH=`stack path --bin-path  --stack-yaml stack-base.yaml 2>/dev/null`:$PATH
 echo SETUP
+date
 stack setup
 echo BUILD
+date
 stack build
+date
 PP=`stack path --local-install-root`/bin/reflex-todomvc.jsexe
 servius -d $PP -p 3301 &
 WW=$!
