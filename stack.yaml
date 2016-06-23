@@ -1,15 +1,15 @@
 flags: {}
 
-resolver: nightly-2016-04-28
-compiler: ghcjs-0.2.0.820160428_ghc-7.10.3
+resolver: lts-6.4
+compiler: ghcjs-0.2.0.9006004_ghc-7.10.3
 
 compiler-check: match-exact
 
 setup-info:
   ghcjs:
     source:
-      ghcjs-0.2.0.820160428_ghc-7.10.3:
-         url: "https://tolysz.org/ghcjs/nightly-2016-04-28-820160428.tar.gz"
+      ghcjs-0.2.0.9006004_ghc-7.10.3:
+         url: "https://tolysz.org/ghcjs/lts-6.4-9006004.tar.gz"
 
 allow-newer: true
 
@@ -17,11 +17,13 @@ packages:
 - location: '.'
 - location:
     git: https://github.com/ryantrinkle/reflex.git
-    commit: 3a7fb30dde160bc31c0bba4f42f7666ea6ca054a
+    commit: f8338f6b68c9be4e8dcddbbab2098aeffa018535
+# 3a7fb30dde160bc31c0bba4f42f7666ea6ca054a
   extra-dep: true
 - location:
-    git: https://github.com/tolysz/reflex-dom.git
-    commit: 5318d581fe3ef7b2b0f70ac352d6c56700124b98
+    git: https://github.com/ryantrinkle/reflex-dom.git
+    commit: e8b7d31fd2b6a8173e51096b7591ec346e33ad85
+# 5318d581fe3ef7b2b0f70ac352d6c56700124b98
   extra-dep: true
 - location:
      git: https://github.com/isomorphism/these.git
