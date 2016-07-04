@@ -1,15 +1,15 @@
 flags: {}
 
-resolver: lts-6.4
-compiler: ghcjs-0.2.0.9006004_ghc-7.10.3
+resolver: lts-6.6
+compiler: ghcjs-0.2.0.900006006_ghc-7.10.3
 
 compiler-check: match-exact
 
 setup-info:
   ghcjs:
     source:
-      ghcjs-0.2.0.9006004_ghc-7.10.3:
-         url: "https://tolysz.org/ghcjs/lts-6.4-9006004.tar.gz"
+      ghcjs-0.2.0.900006006_ghc-7.10.3:
+         url: "https://tolysz.org/ghcjs/lts-6.6-900006006.tar.gz"
 
 allow-newer: true
 
@@ -28,9 +28,17 @@ packages:
 - location:
      git: https://github.com/isomorphism/these.git
      commit: cf68c46bd049d23938f351da5618e9a09ef1102c
+- location:
+     git: https://github.com/reflex-frp/reflex-dom-contrib.git
+     commit: d07180518168fb68a9ac2ec2df71f670e8d85e6b
 
 extra-deps:
-  - ref-tf-0.4
-  - these-0.6.1.0
-  - ghcjs-dom-0.2.3.0
-  - stateWriter-0.2.6
+- ref-tf-0.4
+- these-0.6.1.0
+- ghcjs-dom-0.3.1.0
+- ghcjs-dom-jsffi-0.3.1.0
+# - ghcjs-dom-0.2.3.0
+#- stateWriter-0.2.6
+#- store-0.2.0.0
+#- store-core-0.2.0.0
+#- th-utilities-0.1.1.0

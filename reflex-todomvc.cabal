@@ -37,12 +37,14 @@ library
   build-depends: 
     base,
     reflex,
-    ghcjs-dom == 0.2.*,
+    ghcjs-dom,
+-- == 0.2.*,
     reflex-dom,
     containers,
     file-embed,
     text,
-    mtl
+    mtl,
+    reflex-dom-contrib
   exposed-modules:
     Reflex.TodoMVC
   other-extensions: TemplateHaskell
