@@ -35,10 +35,4 @@ packages:
 extra-deps:
 - ref-tf-0.4
 - these-0.6.1.0
-- ghcjs-dom-0.3.1.0
-- ghcjs-dom-jsffi-0.3.1.0
-# - ghcjs-dom-0.2.3.0
-#- stateWriter-0.2.6
-#- store-0.2.0.0
-#- store-core-0.2.0.0
-#- th-utilities-0.1.1.0
+- ghcjs-dom-0.2.4.0
