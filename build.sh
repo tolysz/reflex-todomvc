@@ -4,7 +4,8 @@ stack --stack-yaml stack-base.yaml setup
 PATH=`stack path --bin-path  --stack-yaml stack-base.yaml 2>/dev/null`:$PATH
 echo SETUP
 date
-stack setup
+node --version
+stack -v setup
 echo BUILD
 date
 stack build
