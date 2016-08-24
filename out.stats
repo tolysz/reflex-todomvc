@@ -1,0 +1,76 @@
+code size summary per package:
+
+FkQsLwAdqz5GYhlQN7pQ69:  10176
+base:                    284983
+ghc-prim:                3321
+integer-gmp:             1925
+main:                    421
+
+
+code size per module:
+
+FkQsLwAdqz5GYhlQN7pQ69
+    GHCJS.Prim:                         5776
+    GHCJS.Prim.Internal:                4400
+
+base
+    Control.Exception.Base:             2721
+    Data.Typeable:                      885
+    Data.Typeable.Internal:             1418
+    Foreign.C.Error:                    9812
+    Foreign.C.String:                   1568
+    Foreign.Marshal.Alloc:              375
+    Foreign.Marshal.Array:              2038
+    Foreign.Storable:                   2680
+    GHC.Base:                           4841
+    GHC.Conc.Sync:                      4451
+    GHC.Enum:                           189
+    GHC.Err:                            218
+    GHC.Exception:                      2991
+    GHC.Foreign:                        12136
+    GHC.ForeignPtr:                     1501
+    GHC.IO:                             3742
+    GHC.IO.Buffer:                      1276
+    GHC.IO.BufferedIO:                  864
+    GHC.IO.Device:                      1297
+    GHC.IO.Encoding:                    1030
+    GHC.IO.Encoding.Failure:            724
+    GHC.IO.Encoding.Latin1:             1864
+    GHC.IO.Encoding.Types:              1032
+    GHC.IO.Encoding.UTF8:               61149
+    GHC.IO.Exception:                   17124
+    GHC.IO.FD:                          37215
+    GHC.IO.Handle:                      416
+    GHC.IO.Handle.FD:                   6981
+    GHC.IO.Handle.Internals:            34932
+    GHC.IO.Handle.Text:                 15761
+    GHC.IO.Handle.Types:                3834
+    GHC.Int:                            802
+    GHC.List:                           1631
+    GHC.MVar:                           188
+    GHC.Ptr:                            188
+    GHC.STRef:                          194
+    GHC.Show:                           13466
+    GHC.Storable:                       1084
+    GHC.TopHandler:                     13541
+    GHC.Word:                           350
+    System.IO:                          407
+    System.Posix.Internals:             16067
+
+ghc-prim
+    GHC.CString:                        1876
+    GHC.IntWord64:                      146
+    GHC.Tuple:                          542
+    GHC.Types:                          757
+
+integer-gmp
+    GHC.Integer.GMP.Prim:               172
+    GHC.Integer.Type:                   1753
+
+main
+    Main:                               421
+
+
+
+packed metadata: 63516
+
