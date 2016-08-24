@@ -1398,7 +1398,24 @@ if(typeof process !== 'undefined' && (typeof h$TH !== 'undefined' || (typeof req
     var h$os = os;
     var h$child = child_process;
     var h$process = process;
-    var h$processConstants = process['binding']('constants');
+    function h$getProcessConstants() {
+      // this is a non-public API, but we need these values for things like file access modes
+      var cs = process['binding']('constants');
+      if(typeof cs.os === 'object' && typeof cs.fs === 'object') {
+        return cs;
+      } else {
+        // earlier node.js versions (4.x and older) have all constants directly in the constants object
+        // construct something that resembles the hierarchy of the object in new versions:
+        return { 'fs': cs
+               , 'crypto': cs
+               , 'os': { 'UV_UDP_REUSEADDR': cs['UV_UDP_REUSEADDR']
+                           , 'errno': cs
+                           , 'signals': cs
+                           }
+               };
+      }
+    }
+    var h$processConstants = h$getProcessConstants();
 } else if(typeof Java !== 'undefined') {
     h$isJvm = true;
     this.console = {
@@ -5756,6 +5773,27 @@ function h$setField(o,n,v) {
         return;
     case 100:
         o.d2.d100 = v;
+        return;
+    case 101:
+        o.d2.d101 = v;
+        return;
+    case 102:
+        o.d2.d102 = v;
+        return;
+    case 103:
+        o.d2.d103 = v;
+        return;
+    case 104:
+        o.d2.d104 = v;
+        return;
+    case 105:
+        o.d2.d105 = v;
+        return;
+    case 106:
+        o.d2.d106 = v;
+        return;
+    case 107:
+        o.d2.d107 = v;
         return;
     default:
         throw ("h$setField: setter not implemented for field: " + n);

@@ -1305,17 +1305,17 @@ function h$base_open(file, file_off, how, mode, c) {
         var acc = how & h$base_o_accmode;
         // passing a number lets node.js use it directly as the flags (undocumented)
         if(acc === h$base_o_rdonly) {
-            flags = h$processConstants['O_RDONLY'];
+            flags = h$processConstants['fs']['O_RDONLY'];
         } else if(acc === h$base_o_wronly) {
-            flags = h$processConstants['O_WRONLY'];
+            flags = h$processConstants['fs']['O_WRONLY'];
         } else { // r+w
-            flags = h$processConstants['O_RDWR'];
+            flags = h$processConstants['fs']['O_RDWR'];
         }
         off = (how & h$base_o_append) ? -1 : 0;
-        flags = flags | ((how & h$base_o_trunc) ? h$processConstants['O_TRUNC'] : 0)
-                      | ((how & h$base_o_creat) ? h$processConstants['O_CREAT'] : 0)
-                      | ((how & h$base_o_excl) ? h$processConstants['O_EXCL'] : 0)
-                      | ((how & h$base_o_append) ? h$processConstants['O_APPEND'] : 0);
+        flags = flags | ((how & h$base_o_trunc) ? h$processConstants['fs']['O_TRUNC'] : 0)
+                      | ((how & h$base_o_creat) ? h$processConstants['fs']['O_CREAT'] : 0)
+                      | ((how & h$base_o_excl) ? h$processConstants['fs']['O_EXCL'] : 0)
+                      | ((how & h$base_o_append) ? h$processConstants['fs']['O_APPEND'] : 0);
         h$fs.open(fp, flags, mode, function(err, fd) {
             if(err) {
                 h$handleErrnoC(err, -1, 0, c);
@@ -1726,4 +1726,2886 @@ function h$shutdownHaskellAndExit(code, fast) {
 // RAND_MAX = 32767
 function h$rand() {
   return (32768 * Math.random()) & 32767;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+function h$_hs_text_memcpy(dst_v,dst_o2,src_v,src_o2,n) {
+  return h$memcpy(dst_v,2*dst_o2,src_v,2*src_o2,2*n);
+}
+function h$_hs_text_memcmp(a_v,a_o2,b_v,b_o2,n) {
+  return h$memcmp(a_v,2*a_o2,b_v,2*b_o2,2*n);
+}
+// decoder below adapted from cbits/cbits.c in the text package
+var h$_text_utf8d =
+   [
+  /*
+   * The first part of the table maps bytes to character classes that
+   * to reduce the size of the transition table and create bitmasks.
+   */
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7, 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  10,3,3,3,3,3,3,3,3,3,3,3,3,4,3,3, 11,6,6,6,5,8,8,8,8,8,8,8,8,8,8,8,
+  /*
+   * The second part is a transition table that maps a combination of
+   * a state of the automaton and a character class to a state.
+   */
+   0,12,24,36,60,96,84,12,12,12,48,72, 12,12,12,12,12,12,12,12,12,12,12,12,
+  12, 0,12,12,12,12,12, 0,12, 0,12,12, 12,24,12,12,12,12,12,24,12,24,12,12,
+  12,12,12,12,12,12,12,24,12,12,12,12, 12,24,12,12,12,12,12,12,12,24,12,12,
+  12,12,12,12,12,12,12,36,12,36,12,12, 12,36,12,12,12,12,12,36,12,36,12,12,
+  12,36,12,12,12,12,12,12,12,12,12,12];
+/*
+ * A best-effort decoder. Runs until it hits either end of input or
+ * the start of an invalid byte sequence.
+ *
+ * At exit, updates *destoff with the next offset to write to, and
+ * returns the next source offset to read from.
+ */
+function h$_hs_text_decode_utf8_internal ( dest_v
+                                         , destoff_v, destoff_o
+                                         , src_v, src_o
+                                         , src_end_v, src_end_o
+                                         , s
+                                         ) {
+  if(src_v === null || src_end_v === null) {
+    { h$ret1 = (src_end_o); return (null); };
+  }
+  var dsto = destoff_v.dv.getUint32(destoff_o,true) << 1;
+  var srco = src_o;
+  var state = s.state;
+  var codepoint = s.codepoint;
+  var ddv = dest_v.dv;
+  var sdv = src_v.dv;
+  function decode(b) {
+    var type = h$_text_utf8d[b];
+    codepoint = (state !== 0) ?
+      (b & 0x3f) | (codepoint << 6) :
+      (0xff >>> type) & b;
+    state = h$_text_utf8d[256 + state + type];
+    return state;
+  }
+  while (srco < src_end_o) {
+    if(decode(sdv.getUint8(srco++)) !== 0) {
+      if(state !== 12) {
+        continue;
+      } else {
+        break;
+      }
+    }
+    if (codepoint <= 0xffff) {
+      ddv.setUint16(dsto,codepoint,true);
+      dsto += 2;
+    } else {
+      ddv.setUint16(dsto,(0xD7C0 + (codepoint >>> 10)),true);
+      ddv.setUint16(dsto+2,(0xDC00 + (codepoint & 0x3FF)),true);
+      dsto += 4;
+    }
+    s.last = srco;
+  }
+  s.state = state;
+  s.codepoint = codepoint;
+  destoff_v.dv.setUint32(destoff_o,dsto>>1,true);
+  { h$ret1 = (srco); return (src_v); };
+}
+function h$_hs_text_decode_utf8_state( dest_v
+                                     , destoff_v, destoff_o
+                                     , src_v, src_o
+                                     , srcend_v, srcend_o
+                                     , codepoint0_v, codepoint0_o
+                                     , state0_v, state0_o
+                                     ) {
+  var s = { state: state0_v.dv.getUint32(state0_o, true)
+          , codepoint: codepoint0_v.dv.getUint32(codepoint0_o, true)
+          , last: src_o
+          };
+  var ret, ret1;
+  { (ret) = (h$_hs_text_decode_utf8_internal ( dest_v , destoff_v, destoff_o , src_v.arr[src_o][0], src_v.arr[src_o][1] , srcend_v, srcend_o , s )); (ret1) = h$ret1; };
+  src_v.arr[src_o][1] = s.last;
+  state0_v.dv.setUint32(state0_o, s.state, true);
+  codepoint0_v.dv.setUint32(codepoint0_o, s.codepoint, true);
+  if(s.state === 12) ret1--;
+  { h$ret1 = (ret1); return (ret); };
+}
+function h$_hs_text_decode_utf8( dest_v
+                               , destoff_v, destoff_o
+                               , src_v, src_o
+                               , srcend_v, srcend_o
+                               ) {
+  /* Back up if we have an incomplete or invalid encoding */
+  var s = { state: 0
+          , codepoint: 0
+          , last: src_o
+          };
+  var ret, ret1;
+  { (ret) = (h$_hs_text_decode_utf8_internal ( dest_v , destoff_v, destoff_o , src_v, src_o , srcend_v, srcend_o , s )); (ret1) = h$ret1; };
+  if (s.state !== 0) ret1--;
+  { h$ret1 = (ret1); return (ret); };
+}
+/*
+ * The ISO 8859-1 (aka latin-1) code points correspond exactly to the first 256 unicode
+ * code-points, therefore we can trivially convert from a latin-1 encoded bytestring to
+ * an UTF16 array
+ */
+function h$_hs_text_decode_latin1(dest_d, src_d, src_o, srcend_d, srcend_o) {
+  var p = src_o;
+  var d = 0;
+  var su8 = src_d.u8;
+  var su3 = src_d.u3;
+  var du1 = dest_d.u1;
+  // consume unaligned prefix
+  while(p != srcend_o && p & 3) {
+    du1[d++] = su8[p++];
+  }
+  // iterate over 32-bit aligned loads
+  if(su3) {
+    while (p < srcend_o - 3) {
+      var w = su3[p>>2];
+      du1[d++] = w & 0xff;
+      du1[d++] = (w >>> 8) & 0xff;
+      du1[d++] = (w >>> 16) & 0xff;
+      du1[d++] = (w >>> 32) & 0xff;
+      p += 4;
+    }
+  }
+  // handle unaligned suffix
+  while (p != srcend_o)
+    du1[d++] = su8[p++];
+}
+function h$_hs_text_encode_utf8(destp_v, destp_o, src_v, srcoff, srclen) {
+  var dest_v = destp_v.arr[destp_o][0];
+  var dest_o = destp_v.arr[destp_o][1];
+  var src = srcoff;
+  var dest = dest_o;
+  var srcend = src + srclen;
+  var srcu1 = src_v.u1;
+  if(!srcu1) throw "h$_hs_text_encode_utf8: invalid alignment for source";
+  var srcu3 = src_v.u3;
+  var destu8 = dest_v.u8;
+  while(src < srcend) {
+    // run of (aligned) ascii characters
+    while(srcu3 && !(src & 1) && srcend - src >= 2) {
+      var w = srcu3[src>>1];
+      if(w & 0xFF80FF80) break;
+      destu8[dest++] = w & 0xFFFF;
+      destu8[dest++] = w >>> 16;
+      src += 2;
+    }
+    while(src < srcend) {
+      var w = srcu1[src++];
+      if(w <= 0x7F) {
+        destu8[dest++] = w;
+        break; // go back to a stream of ASCII
+      } else if(w <= 0x7FF) {
+        destu8[dest++] = (w >> 6) | 0xC0;
+        destu8[dest++] = (w & 0x3f) | 0x80;
+      } else if(w < 0xD800 || w > 0xDBFF) {
+        destu8[dest++] = (w >>> 12) | 0xE0;
+        destu8[dest++] = ((w >> 6) & 0x3F) | 0x80;
+        destu8[dest++] = (w & 0x3F) | 0x80;
+      } else {
+        var c = ((w - 0xD800) << 10) + (srcu1[src++] - 0xDC00) + 0x10000;
+        destu8[dest++] = (c >>> 18) | 0xF0;
+        destu8[dest++] = ((c >> 12) & 0x3F) | 0x80;
+        destu8[dest++] = ((c >> 6) & 0x3F) | 0x80;
+        destu8[dest++] = (c & 0x3F) | 0x80;
+      }
+    }
+  }
+  destp_v.arr[destp_o][1] = dest;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$ghcjs_currentWindow() {
+  return window;
+};
+function h$ghcjs_currentDocument() {
+  return document;
+};
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+/* include/HsBaseConfig.h.  Generated from HsBaseConfig.h.in by configure.  */
+/* include/HsBaseConfig.h.in.  Generated from configure.ac by autoheader.  */
+/* The value of E2BIG. */
+/* The value of EACCES. */
+/* The value of EADDRINUSE. */
+/* The value of EADDRNOTAVAIL. */
+/* The value of EADV. */
+/* The value of EAFNOSUPPORT. */
+/* The value of EAGAIN. */
+/* The value of EALREADY. */
+/* The value of EBADF. */
+/* The value of EBADMSG. */
+/* The value of EBADRPC. */
+/* The value of EBUSY. */
+/* The value of ECHILD. */
+/* The value of ECOMM. */
+/* The value of ECONNABORTED. */
+/* The value of ECONNREFUSED. */
+/* The value of ECONNRESET. */
+/* The value of EDEADLK. */
+/* The value of EDESTADDRREQ. */
+/* The value of EDIRTY. */
+/* The value of EDOM. */
+/* The value of EDQUOT. */
+/* The value of EEXIST. */
+/* The value of EFAULT. */
+/* The value of EFBIG. */
+/* The value of EFTYPE. */
+/* The value of EHOSTDOWN. */
+/* The value of EHOSTUNREACH. */
+/* The value of EIDRM. */
+/* The value of EILSEQ. */
+/* The value of EINPROGRESS. */
+/* The value of EINTR. */
+/* The value of EINVAL. */
+/* The value of EIO. */
+/* The value of EISCONN. */
+/* The value of EISDIR. */
+/* The value of ELOOP. */
+/* The value of EMFILE. */
+/* The value of EMLINK. */
+/* The value of EMSGSIZE. */
+/* The value of EMULTIHOP. */
+/* The value of ENAMETOOLONG. */
+/* The value of ENETDOWN. */
+/* The value of ENETRESET. */
+/* The value of ENETUNREACH. */
+/* The value of ENFILE. */
+/* The value of ENOBUFS. */
+/* The value of ENOCIGAR. */
+/* The value of ENODATA. */
+/* The value of ENODEV. */
+/* The value of ENOENT. */
+/* The value of ENOEXEC. */
+/* The value of ENOLCK. */
+/* The value of ENOLINK. */
+/* The value of ENOMEM. */
+/* The value of ENOMSG. */
+/* The value of ENONET. */
+/* The value of ENOPROTOOPT. */
+/* The value of ENOSPC. */
+/* The value of ENOSR. */
+/* The value of ENOSTR. */
+/* The value of ENOSYS. */
+/* The value of ENOTBLK. */
+/* The value of ENOTCONN. */
+/* The value of ENOTDIR. */
+/* The value of ENOTEMPTY. */
+/* The value of ENOTSOCK. */
+/* The value of ENOTSUP. */
+/* The value of ENOTTY. */
+/* The value of ENXIO. */
+/* The value of EOPNOTSUPP. */
+/* The value of EPERM. */
+/* The value of EPFNOSUPPORT. */
+/* The value of EPIPE. */
+/* The value of EPROCLIM. */
+/* The value of EPROCUNAVAIL. */
+/* The value of EPROGMISMATCH. */
+/* The value of EPROGUNAVAIL. */
+/* The value of EPROTO. */
+/* The value of EPROTONOSUPPORT. */
+/* The value of EPROTOTYPE. */
+/* The value of ERANGE. */
+/* The value of EREMCHG. */
+/* The value of EREMOTE. */
+/* The value of EROFS. */
+/* The value of ERPCMISMATCH. */
+/* The value of ERREMOTE. */
+/* The value of ESHUTDOWN. */
+/* The value of ESOCKTNOSUPPORT. */
+/* The value of ESPIPE. */
+/* The value of ESRCH. */
+/* The value of ESRMNT. */
+/* The value of ESTALE. */
+/* The value of ETIME. */
+/* The value of ETIMEDOUT. */
+/* The value of ETOOMANYREFS. */
+/* The value of ETXTBSY. */
+/* The value of EUSERS. */
+/* The value of EWOULDBLOCK. */
+/* The value of EXDEV. */
+/* The value of O_BINARY. */
+/* The value of SIGINT. */
+/* Define to 1 if you have the `clock_gettime' function. */
+/* #undef HAVE_CLOCK_GETTIME */
+/* Define to 1 if you have the <ctype.h> header file. */
+/* Define if you have epoll support. */
+/* #undef HAVE_EPOLL */
+/* Define to 1 if you have the `epoll_ctl' function. */
+/* #undef HAVE_EPOLL_CTL */
+/* Define to 1 if you have the <errno.h> header file. */
+/* Define to 1 if you have the `eventfd' function. */
+/* #undef HAVE_EVENTFD */
+/* Define to 1 if you have the <fcntl.h> header file. */
+/* Define to 1 if you have the `ftruncate' function. */
+/* Define to 1 if you have the `getclock' function. */
+/* #undef HAVE_GETCLOCK */
+/* Define to 1 if you have the `getrusage' function. */
+/* Define to 1 if you have the <inttypes.h> header file. */
+/* Define to 1 if you have the `iswspace' function. */
+/* Define to 1 if you have the `kevent' function. */
+/* Define to 1 if you have the `kevent64' function. */
+/* Define if you have kqueue support. */
+/* Define to 1 if you have the <langinfo.h> header file. */
+/* Define to 1 if you have libcharset. */
+/* Define to 1 if you have the `rt' library (-lrt). */
+/* #undef HAVE_LIBRT */
+/* Define to 1 if you have the <limits.h> header file. */
+/* Define to 1 if the system has the type `long long'. */
+/* Define to 1 if you have the `lstat' function. */
+/* Define to 1 if you have the <memory.h> header file. */
+/* Define if you have poll support. */
+/* Define to 1 if you have the <poll.h> header file. */
+/* Define to 1 if you have the <signal.h> header file. */
+/* Define to 1 if you have the <stdint.h> header file. */
+/* Define to 1 if you have the <stdlib.h> header file. */
+/* Define to 1 if you have the <strings.h> header file. */
+/* Define to 1 if you have the <string.h> header file. */
+/* Define to 1 if you have the <sys/epoll.h> header file. */
+/* #undef HAVE_SYS_EPOLL_H */
+/* Define to 1 if you have the <sys/eventfd.h> header file. */
+/* #undef HAVE_SYS_EVENTFD_H */
+/* Define to 1 if you have the <sys/event.h> header file. */
+/* Define to 1 if you have the <sys/resource.h> header file. */
+/* Define to 1 if you have the <sys/select.h> header file. */
+/* Define to 1 if you have the <sys/stat.h> header file. */
+/* Define to 1 if you have the <sys/syscall.h> header file. */
+/* Define to 1 if you have the <sys/timeb.h> header file. */
+/* Define to 1 if you have the <sys/timers.h> header file. */
+/* #undef HAVE_SYS_TIMERS_H */
+/* Define to 1 if you have the <sys/times.h> header file. */
+/* Define to 1 if you have the <sys/time.h> header file. */
+/* Define to 1 if you have the <sys/types.h> header file. */
+/* Define to 1 if you have the <sys/utsname.h> header file. */
+/* Define to 1 if you have the <sys/wait.h> header file. */
+/* Define to 1 if you have the <termios.h> header file. */
+/* Define to 1 if you have the `times' function. */
+/* Define to 1 if you have the <time.h> header file. */
+/* Define to 1 if you have the <unistd.h> header file. */
+/* Define to 1 if you have the <utime.h> header file. */
+/* Define to 1 if you have the <wctype.h> header file. */
+/* Define to 1 if you have the <windows.h> header file. */
+/* #undef HAVE_WINDOWS_H */
+/* Define to 1 if you have the <winsock.h> header file. */
+/* #undef HAVE_WINSOCK_H */
+/* Define to 1 if you have the `_chsize' function. */
+/* #undef HAVE__CHSIZE */
+/* Define to Haskell type for cc_t */
+/* Define to Haskell type for char */
+/* Define to Haskell type for clock_t */
+/* Define to Haskell type for dev_t */
+/* Define to Haskell type for double */
+/* Define to Haskell type for float */
+/* Define to Haskell type for gid_t */
+/* Define to Haskell type for ino_t */
+/* Define to Haskell type for int */
+/* Define to Haskell type for intmax_t */
+/* Define to Haskell type for intptr_t */
+/* Define to Haskell type for long */
+/* Define to Haskell type for long long */
+/* Define to Haskell type for mode_t */
+/* Define to Haskell type for nlink_t */
+/* Define to Haskell type for off_t */
+/* Define to Haskell type for pid_t */
+/* Define to Haskell type for ptrdiff_t */
+/* Define to Haskell type for rlim_t */
+/* Define to Haskell type for short */
+/* Define to Haskell type for signed char */
+/* Define to Haskell type for sig_atomic_t */
+/* Define to Haskell type for size_t */
+/* Define to Haskell type for speed_t */
+/* Define to Haskell type for ssize_t */
+/* Define to Haskell type for suseconds_t */
+/* Define to Haskell type for tcflag_t */
+/* Define to Haskell type for time_t */
+/* Define to Haskell type for uid_t */
+/* Define to Haskell type for uintmax_t */
+/* Define to Haskell type for uintptr_t */
+/* Define to Haskell type for unsigned char */
+/* Define to Haskell type for unsigned int */
+/* Define to Haskell type for unsigned long */
+/* Define to Haskell type for unsigned long long */
+/* Define to Haskell type for unsigned short */
+/* Define to Haskell type for useconds_t */
+/* Define to Haskell type for wchar_t */
+/* Define to the address where bug reports for this package should be sent. */
+/* Define to the full name of this package. */
+/* Define to the full name and version of this package. */
+/* Define to the one symbol short name of this package. */
+/* Define to the home page for this package. */
+/* Define to the version of this package. */
+/* The size of `kev.filter', as computed by sizeof. */
+/* The size of `kev.flags', as computed by sizeof. */
+/* The size of `struct MD5Context', as computed by sizeof. */
+/* Define to 1 if you have the ANSI C header files. */
+/* Number of bits in a file offset, on hosts where this is settable. */
+/* #undef _FILE_OFFSET_BITS */
+/* Define for large files, on AIX-style hosts. */
+/* #undef _LARGE_FILES */
+// get/set permissions for file
+// set errno and return -1 on error
+// masks: 1 - read
+//        2 - write
+//        4 - exe
+//        8 - search
+function h$directory_getPermissions(file, c) {
+    ;
+    if(h$isNode) {
+        h$fs.stat(file, function(err, fs) {
+            if(err) {
+                h$handleErrnoC(err, -1, 0, c);
+            } else {
+                var m = fs.mode;
+                var r = (m&4) || (m&32) || (m&256);
+                var w = (m&2) || (m&16) || (m&128);
+                var x = (m&1) || (m&8) || (m&64);
+                var exe = x; // fixme?
+                var search = x; // fixme?
+                if(process.platform == 'win32') exe = true;
+                c((r?1:0)|(w?2:0)|(exe?4:0)|(search?8:0));
+            }
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_setPermissions(file, perms, c) {
+    ;
+    if(h$isNode) {
+        h$fs.stat(file, function(err, fs) {
+            if(err) {
+                h$handleErrnoC(err, -1, 0, c);
+            } else {
+                var r = perms & 1;
+                var w = perms & 2;
+                var x = perms & 4;
+                var search = perms & 8;
+                var m = fs.mode;
+                m = r ? (m | 292) : (m & ~292);
+                m = w ? (m | 146) : (m & ~146);
+                m = (x || search) ? (m | 73) : (m & ~73);
+                h$fs.chmod(file, function(err) {
+                    h$handleErrnoC(err, -1, 0, c);
+                });
+            }
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_copyPermissions(file1, file2, c) {
+    ;
+    if(h$isNode) {
+        h$fs.stat(file1, function(err1, fs) {
+            if(err1) {
+                h$handleErrnoC(err1, -1, 0, c);
+            } else {
+                h$fs.chmod(file2, fs.mode, function(err2) {
+                    h$handleErrnoC(err2, -1, 0, c);
+                });
+            }
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_createDirectory(dir, c) {
+    ;
+    if(h$isNode) {
+        h$fs.mkdir(dir, function(err) {
+            h$handleErrnoC(err,-1,0,c);
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_removeDirectory(dir, c) {
+    ;
+    if(h$isNode) {
+        h$fs.rmdir(dir, function(err) {
+            h$handleErrnoC(err,-1,0,c);
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_removeFile(file, c) {
+    ;
+    if(h$isNode) {
+        h$fs.unlink(file, function(err) {
+            h$handleErrnoC(err,-1,0,c);
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_renameDirectory(dir1, dir2, c) {
+    ;
+    if(h$isNode) {
+        h$fs.rename(dir1, dir2, function(err) {
+            h$handleErrnoC(err,-1,0,c);
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_renameFile(file1, file2, c) {
+    ;
+    if(h$isNode) {
+        h$fs.rename(file1, file2, function(err) {
+            h$handleErrnoC(err,-1,0,c);
+        });
+    } else
+        h$unsupported(-1, c);
+}
+function h$directory_canonicalizePath(path) {
+    ;
+    if(h$isNode) {
+        return h$path.normalize(path);
+    } else
+        return path;
+}
+function h$directory_findExecutables(name, c) {
+    ;
+    if(h$isNode) {
+        var result = [];
+        var pathSep = process.platform === 'win32'?';':':';
+        var parts = process.env['PATH'].split(pathSep);
+        var exts = []; // process.platform === 'win32'?process.env['PATHEXT'].split(pathSep):[];
+        exts.push(null);
+        files = [];
+        result = [];
+        for(var i=0;i<parts.length;i++) {
+            for(var j=0;j<exts.length;j++) {
+                files.push(parts[i] + h$path.sep + name + (exts[j]?(exts[j]):""));
+            }
+        }
+        var tryFile = function(n) {
+            if(n >= files.length) {
+                c(result);
+            } else {
+                ;
+                h$fs.stat(files[n], function(err, fs) {
+                    if(!err && ((fs.mode & 73) || process.platform === 'win32')) result.push(files[n]);
+                    tryFile(n+1);
+                });
+            }
+        }
+        tryFile(0);
+    } else
+        c([]);
+}
+function h$directory_getDirectoryContents(dir,c) {
+    ;
+    if(h$isNode) {
+        h$fs.readdir(dir, function(err, d) {
+            h$handleErrnoC(err, null, d, c);
+        });
+    } else
+        h$unsupported(null, c);
+}
+function h$directory_getCurrentDirectory() {
+    ;
+    if(h$isNode) {
+        return h$handleErrno(null, function() {
+            return process.cwd();
+        });
+    } else
+        return "/";
+}
+function h$directory_setCurrentDirectory(dir) {
+    ;
+    if(h$isNode) {
+        return h$handleErrnoS(-1, 0, function() {
+            return process.chdir(dir);
+        });
+    } else
+        return h$unsupported(-1);
+}
+function h$directory_getHomeDirectory(dir) {
+    ;
+    if(h$isNode) {
+        return process.env['HOME'] ||
+            process.env['HOMEPATH'] ||
+            process.env['USERPROFILE'];
+    } else
+        return "/"
+}
+function h$directory_getAppUserDataDirectory(appName) {
+    ;
+    if(h$isNode) {
+        if(process.env['APPDATA'])
+            return process.env['APPDATA'] + h$path.sep + appName;
+        if(process.env['HOME'])
+            return process.env['HOME'] + h$path.sep + "." + appName;
+        ;
+        return "/";
+    } else
+        return "/";
+}
+function h$directory_getUserDocumentsDirectory(appName) {
+    ;
+    if(h$isNode) {
+        if(process.env['HOME'])
+            return process.env['HOME'];
+        // fixme handle Windows
+        ;
+        return "/";
+    } else
+        return "/";
+}
+function h$directory_getTemporaryDirectory() {
+    ;
+    if(h$isNode) {
+        return h$handleErrno(null, function() {
+            return h$os.tmpdir();
+        });
+    } else
+        return "/";
+}
+function h$directory_exeExtension() {
+    ;
+    if(h$isNode) {
+        return (h$os.platform() === 'windows') ? 'exe' : '';
+    } else
+        return '';
+}
+function h$directory_getFileStatus(file, c) {
+    ;
+    if(h$isNode) {
+        h$fs.stat(file, function(err, s) {
+            h$handleErrnoC(err, null, s, c);
+        });
+    } else
+        h$unsupported(null, c);
+}
+function h$directory_getFileOrSymlinkStatus(file, c) {
+    ;
+    if(h$isNode) {
+        h$fs.lstat(file, function(err, s) {
+            h$handleErrnoC(err, null, s, c);
+        });
+    } else
+        h$unsupported(null, c);
+}
+function h$directory_getFileStatusModificationTime(fs) {
+    ;
+    return fs.mtime.getTime();
+}
+function h$directory_getFileStatusIsDirectory(fs) {
+    ;
+    return fs.isDirectory();
+}
+// fixme this doesn't really belong here
+function h$chmod(path_d, path_o, m) {
+    if(h$isNode) {
+        var path = h$decodeUtf8z(path_d, path_o);
+        ;
+        h$fs.chmodSync(path, m);
+        return 0;
+    } else
+        return h$unsupported(-1);
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+// JS Objects stuff
+function h$isFloat (n) {
+  return n===+n && n!==(n|0);
+}
+function h$isInteger (n) {
+  return n===+n && n===(n|0);
+}
+/*
+        -- 0 - null, 1 - integer,
+        -- 2 - float, 3 - bool,
+        -- 4 - string, 5 - array
+        -- 6 - object
+*/
+function h$typeOf(o) {
+    if (!(o instanceof Object)) {
+        if (o == null) {
+            return 0;
+        } else if (typeof o == 'number') {
+            if (h$isInteger(o)) {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else if (typeof o == 'boolean') {
+            return 3;
+        } else {
+            return 4;
+        }
+    } else {
+        if (Object.prototype.toString.call(o) == '[object Array]') {
+            // it's an array
+            return 5;
+        } else if (!o) {
+            // null 
+            return 0;
+        } else {
+            // it's an object
+            return 6;
+        }
+    }
+}
+function h$listProps(o) {
+    if (!(o instanceof Object)) {
+        return [];
+    }
+    var l = [], i = 0;
+    for (var prop in o) {
+        l[i++] = prop;
+    }
+    return l;
+}
+function h$flattenObj(o) {
+    var l = [], i = 0;
+    for (var prop in o) {
+        l[i++] = [prop, o[prop]];
+    }
+    return l;
+}
+/*
+
+  build an object from key/value pairs:
+    var obj = h$buildObject(key1, val1, key2, val2, ...);
+
+  note: magic name:
+    invocations of this function are replaced by object literals wherever
+    possible
+
+ */
+function h$buildObject() {
+    var r = {}, l = arguments.length;
+    for(var i = 0; i < l; i += 2) {
+        var k = arguments[i], v = arguments[i+1];
+        r[k] = v;
+    }
+    return r;
+}
+// same as above, but from a list: [k1,v1,k2,v2,...]
+function h$buildObjectFromList(xs) {
+    var r = {}, k, v, t;
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+        xs = ((xs).d2);
+        t = ((xs).d2);
+        if(((t).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+            k = ((xs).d1);
+            v = ((t).d1);
+            xs = ((t).d2);
+            r[k] = v;
+        } else {
+            return r;
+        }
+    }
+    return r;
+}
+// same as above, but from a list of tuples [(k1,v1),(k2,v2),...]
+function h$buildObjectFromTupList(xs) {
+    var r = {};
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ var h = ((xs).d1);
+ xs = ((xs).d2);
+ r[((((h).d1)).d1)] = ((((h).d2)).d1);
+    }
+    return r;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$get_current_timezone_seconds(t, pdst_v, pdst_o, pname_v, pname_o) {
+    var d = new Date(t * 1000);
+    var now = new Date();
+    var jan = new Date(now.getFullYear(),0,1);
+    var jul = new Date(now.getFullYear(),6,1);
+    var stdOff = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+    var isDst = d.getTimezoneOffset() < stdOff;
+    var tzo = d.getTimezoneOffset();
+    pdst_v.dv.setInt32(pdst_o, isDst ? 1 : 0, true);
+    if(!pname_v.arr) pname_v.arr = [];
+    var offstr = tzo < 0 ? ('+' + (tzo/-60)) : ('' + (tzo/-60));
+    pname_v.arr[pname_o] = [h$encodeUtf8("UTC" + offstr), 0];
+    return (-60*tzo)|0;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+/* FNV-1 hash
+ *
+ * The FNV-1 hash description: http://isthe.com/chongo/tech/comp/fnv/
+ * The FNV-1 hash is public domain: http://isthe.com/chongo/tech/comp/fnv/#public_domain
+ */
+function h$hashable_fnv_hash_offset(str_a, o, len, hash) {
+  return h$hashable_fnv_hash(str_a, o, len, hash);
+}
+function h$hashable_fnv_hash(str_d, str_o, len, hash) {
+  if(len > 0) {
+    var d = str_d.u8;
+    for(var i=0;i<len;i++) {
+      hash = h$mulInt32(hash, 16777619) ^ d[str_o+i];
+    }
+  }
+  return hash;
+}
+// int hashable_getRandomBytes(unsigned char *dest, int nbytes)
+function h$hashable_getRandomBytes(dest_d, dest_o, len) {
+  if(len > 0) {
+    var d = dest_d.u8;
+    for(var i=0;i<len;i++) {
+      d[dest_o+i] = Math.floor(Math.random() * 256);
+    }
+  }
+  return len;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$filepath_isWindows() {
+    if(h$isNode && process.platform === 'win32') return true;
+  return false;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$dom$sendXHR(xhr, d, cont) {
+    var clear;
+    var error = function () {
+        clear(); cont(2);
+    };
+    var abort = function () {
+        clear(); cont(1);
+    };
+    var load = function () {
+        clear(); cont(0);
+    };
+    clear = function () {
+        xhr.removeEventListener('error', error);
+        xhr.removeEventListener('abort', abort);
+        xhr.removeEventListener('load', load);
+    }
+    xhr.addEventListener('error', error);
+    xhr.addEventListener('abort', abort);
+    xhr.addEventListener('load', load);
+    if(d) {
+ xhr.send(d);
+    } else {
+ xhr.send();
+    }
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+function h$createWebSocket(url, protocols) {
+  return new WebSocket(url, protocols);
+}
+/*
+   this must be called before the websocket has connected,
+   typically synchronously after creating the socket
+ */
+function h$openWebSocket(ws, mcb, ccb, c) {
+  if(ws.readyState !== 0) {
+    throw new Error("h$openWebSocket: unexpected readyState, socket must be CONNECTING");
+  }
+  ws.lastError = null;
+  ws.onopen = function() {
+    if(mcb) {
+      ws.onmessage = mcb;
+    }
+    if(ccb || mcb) {
+      ws.onclose = function(ce) {
+        if(ws.onmessage) {
+          h$release(ws.onmessage);
+          ws.onmessage = null;
+        }
+        if(ccb) {
+          h$release(ccb);
+          ccb(ce);
+        }
+      };
+    };
+    ws.onerror = function(err) {
+      ws.lastError = err;
+      if(ws.onmessage) {
+        h$release(ws.onmessage);
+        ws.onmessage = null;
+      }
+      ws.close();
+    };
+    c(null);
+  };
+  ws.onerror = function(err) {
+    if(ccb) h$release(ccb);
+    if(mcb) h$release(mcb);
+    ws.onmessage = null;
+    ws.close();
+    c(err);
+  };
+}
+function h$closeWebSocket(status, reason, ws) {
+  ws.onerror = null;
+  if(ws.onmessage) {
+    h$release(ws.onmessage);
+    ws.onmessage = null;
+  }
+  ws.close(status, reason);
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+/*
+   convert an array to a Haskell list, wrapping each element in a
+   JSVal constructor
+ */
+function h$fromArray(a) {
+    var r = h$ghczmprimZCGHCziTypesziZMZN;
+    for(var i=a.length-1;i>=0;i--) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (a[i])))), (r)));
+    return a;
+}
+/*
+   convert an array to a Haskell list. No additional wrapping of the
+   elements is performed. Only use this when the elements are directly
+   usable as Haskell heap objects (numbers, boolean) or when the
+   array elements have already been appropriately wrapped
+ */
+function h$fromArrayNoWrap(a) {
+    var r = h$ghczmprimZCGHCziTypesziZMZN;
+    for(var i=a.length-1;i>=0;i--) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, (a[i]), (r)));
+    return a;
+}
+/*
+   convert a list of JSVal to an array. the list must have been fully forced,
+   not just the spine.
+ */
+function h$listToArray(xs) {
+    var a = [], i = 0;
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ a[i++] = ((((xs).d1)).d1);
+ xs = ((xs).d2);
+    }
+    return a;
+}
+function h$listToArrayWrap(xs) {
+    return (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (h$listToArray(xs))));
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$animationFrameCancel(h) {
+    if(h.handle) window.cancelAnimationFrame(h.handle);
+    if(h.callback) {
+        h$release(h.callback)
+        h.callback = null;
+    }
+}
+function h$animationFrameRequest(h) {
+    h.handle = window.requestAnimationFrame(function(ts) {
+        var cb = h.callback;
+        if(cb) {
+         h$release(cb);
+         h.callback = null;
+         cb(ts);
+        }
+    });
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$exportValue(fp1a,fp1b,fp2a,fp2b,o) {
+  var e = { fp1a: fp1a
+          , fp1b: fp1b
+          , fp2a: fp2a
+          , fp2b: fp2b
+          , released: false
+          , root: o
+          , _key: -1
+          };
+  h$retain(e);
+  return e;
+}
+function h$derefExport(fp1a,fp1b,fp2a,fp2b,e) {
+  if(!e || typeof e !== 'object') return null;
+  if(e.released) return null;
+  if(fp1a !== e.fp1a || fp1b !== e.fp1b ||
+     fp2a !== e.fp2a || fp2b !== e.fp2b) return null;
+  return e.root;
+}
+function h$releaseExport(e) {
+  h$release(e);
+  e.released = true;
+  e.root = null;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+/*
+ * Support code for the Data.JSString module. This code presents a JSString
+ * as a sequence of code points and hides the underlying encoding ugliness of
+ * the JavaScript strings.
+ *
+ * Use Data.JSString.Raw for direct access to the JSThis makes the operations more expen
+ */
+/*
+ * Some workarounds here for JS engines that do not support proper
+ * code point access
+ */
+var h$jsstringEmpty = (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, ('')));
+var h$jsstringHead, h$jsstringTail, h$jsstringCons,
+    h$jsstringSingleton, h$jsstringSnoc, h$jsstringUncons,
+    h$jsstringIndex, h$jsstringUncheckedIndex,
+    h$jsstringTake, h$jsstringDrop, h$jsstringTakeEnd, h$jsstringDropEnd;
+if(String.prototype.codePointAt) {
+    h$jsstringSingleton = function(ch) {
+        ;
+ return String.fromCodePoint(ch);
+    }
+    h$jsstringHead = function(str) {
+        ;
+ var cp = ch.codePointAt(0);
+ return (cp === undefined) ? -1 : (cp|0);
+    }
+    h$jsstringTail = function(str) {
+        ;
+ var l = str.length;
+ if(l===0) return null;
+ var ch = str.codePointAt(0);
+ if(ch === undefined) return null;
+ // string length is at least two if ch comes from a surrogate pair
+ return str.substr(((ch)>=0x10000)?2:1);
+    }
+    h$jsstringCons = function(ch, str) {
+        ;
+ return String.fromCodePoint(ch)+str;
+    }
+    h$jsstringSnoc = function(str, ch) {
+        ;
+ return str+String.fromCodePoint(ch);
+    }
+    h$jsstringUncons = function(str) {
+        ;
+ var l = str.length;
+ if(l===0) return null;
+ var ch = str.codePointAt(0);
+        if(ch === undefined) {
+     { h$ret1 = (null); return (null); };
+        }
+        { h$ret1 = (str.substr(((ch)>=0x10000)?2:1)); return (ch); };
+    }
+    // index is the first part of the character
+    h$jsstringIndex = function(i, str) {
+        ;
+ var ch = str.codePointAt(i);
+ if(ch === undefined) return -1;
+ return ch;
+    }
+    h$jsstringUncheckedIndex = function(i, str) {
+        ;
+ return str.codePointAt(i);
+    }
+} else {
+    h$jsstringSingleton = function(ch) {
+        ;
+ return (((ch)>=0x10000)) ? String.fromCharCode(((((ch)-0x10000)>>>10)+0xDC00), (((ch)&0x3FF)+0xD800))
+                               : String.fromCharCode(ch);
+    }
+    h$jsstringHead = function(str) {
+        ;
+ var l = str.length;
+ if(l===0) return -1;
+ var ch = str.charCodeAt(0);
+ if(((ch|1023)===0xDBFF)) {
+     return (l>1) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(1))-9216) : -1;
+ } else {
+     return ch;
+ }
+    }
+    h$jsstringTail = function(str) {
+        ;
+ var l = str.length;
+ if(l===0) return null;
+ var ch = str.charCodeAt(0);
+ if(((ch|1023)===0xDBFF)) {
+     return (l>1)?str.substr(2):null;
+ } else return str.substr(1);
+    }
+    h$jsstringCons = function(ch, str) {
+        ;
+ return ((((ch)>=0x10000)) ? String.fromCharCode(((((ch)-0x10000)>>>10)+0xDC00), (((ch)&0x3FF)+0xD800))
+                                : String.fromCharCode(ch))
+                                + str;
+    }
+    h$jsstringSnoc = function(str, ch) {
+        ;
+ return str + ((((ch)>=0x10000)) ? String.fromCharCode(((((ch)-0x10000)>>>10)+0xDC00), (((ch)&0x3FF)+0xD800))
+                                      : String.fromCharCode(ch));
+    }
+    h$jsstringUncons = function(str) {
+        ;
+ var l = str.length;
+ if(l===0) return -1;
+ var ch = str.charCodeAt(0);
+ if(((ch|1023)===0xDBFF)) {
+   if(l > 1) {
+        { h$ret1 = (str.substr(2)); return (((((ch)-0xD800)<<10)+(str.charCodeAt(1))-9216)); };
+   } else {
+       { h$ret1 = (null); return (-1); };
+   }
+ } else {
+      { h$ret1 = (str.substr(1)); return (ch); };
+ }
+    }
+    // index is the first part of the character
+    h$jsstringIndex = function(i, str) {
+        // TRACE_JSSTRING("(no codePointAt) index: " + i + " '" + str + "'");
+ var ch = str.charCodeAt(i);
+ if(ch != ch) return -1; // NaN test
+ return (((ch|1023)===0xDBFF)) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(i+1))-9216) : ch;
+    }
+    h$jsstringUncheckedIndex = function(i, str) {
+        ;
+ var ch = str.charCodeAt(i);
+ return (((ch|1023)===0xDBFF)) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(i+1))-9216) : ch;
+    }
+}
+function h$jsstringPack(xs) {
+    var r = '', i = 0, a = [], c;
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ c = ((xs).d1);
+ a[i++] = ((typeof(c) === 'number')?(c):(c).d1);
+ if(i >= 60000) {
+     r += String.fromCharCode.apply(null, a);
+     a = [];
+     i = 0;
+ }
+ xs = ((xs).d2);
+    }
+    if(i > 0) r += String.fromCharCode.apply(null, a);
+    ;
+    return r;
+}
+function h$jsstringPackReverse(xs) {
+    var a = [], i = 0, c;
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ c = ((xs).d1);
+ a[i++] = ((typeof(c) === 'number')?(c):(c).d1);
+ xs = ((xs).d2);
+    }
+    if(i===0) return '';
+    var r = h$jsstringConvertArray(a.reverse());
+    ;
+    return r;
+}
+function h$jsstringPackArray(arr) {
+    ;
+    return h$jsstringConvertArray(arr);
+}
+function h$jsstringPackArrayReverse(arr) {
+    ;
+    return h$jsstringConvertArray(arr.reverse());
+}
+function h$jsstringConvertArray(arr) {
+    if(arr.length < 60000) {
+ return String.fromCharCode.apply(null, arr);
+    } else {
+ var r = '';
+ for(var i=0; i<arr.length; i+=60000) {
+     r += String.fromCharCode.apply(null, arr.slice(i, i+60000));
+ }
+ return r;
+    }
+}
+function h$jsstringInit(str) {
+    ;
+    var l = str.length;
+    if(l===0) return null;
+    var ch = str.charCodeAt(l-1);
+    var o = ((ch|1023)===0xDFFF)?2:1;
+    var r = str.substr(0, l-o);
+    return r;
+}
+function h$jsstringLast(str) {
+    ;
+    var l = str.length;
+    if(l===0) return -1;
+    var ch = str.charCodeAt(l-1);
+    if(((ch|1023)===0xDFFF)) {
+ return (l>1) ? ((((str.charCodeAt(l-2))-0xD800)<<10)+(ch)-9216) : -1;
+    } else return ch;
+}
+// index is the last part of the character
+function h$jsstringIndexR(i, str) {
+    ;
+    if(i < 0 || i > str.length) return -1;
+    var ch = str.charCodeAt(i);
+    return (((ch|1023)===0xDFFF)) ? ((((str.charCodeAt(i-1))-0xD800)<<10)+(ch)-9216) : ch;
+}
+function h$jsstringNextIndex(i, str) {
+    ;
+    return i + (((str.charCodeAt(i)|1023)===0xDBFF)?2:1);
+}
+function h$jsstringTake(n, str) {
+    ;
+    if(n <= 0) return '';
+    var i = 0, l = str.length, ch;
+    if(n >= l) return str;
+    while(n--) {
+ ch = str.charCodeAt(i++);
+ if(((ch|1023)===0xDBFF)) i++;
+ if(i >= l) return str;
+    }
+    return str.substr(0,i);
+}
+function h$jsstringDrop(n, str) {
+    ;
+    if(n <= 0) return str;
+    var i = 0, l = str.length, ch;
+    if(n >= l) return '';
+    while(n--) {
+ ch = str.charCodeAt(i++);
+ if(((ch|1023)===0xDBFF)) i++;
+ if(i >= l) return str;
+    }
+    return str.substr(i);
+}
+function h$jsstringSplitAt(n, str) {
+  ;
+  if(n <= 0) {
+    { h$ret1 = (str); return (""); };
+  } else if(n >= str.length) {
+    { h$ret1 = (""); return (str); };
+  }
+  var i = 0, l = str.length, ch;
+  while(n--) {
+    ch = str.charCodeAt(i++);
+    if(((ch|1023)===0xDBFF)) i++;
+    if(i >= l) {
+      { h$ret1 = (""); return (str); };
+    }
+  }
+  { h$ret1 = (str.substr(i)); return (str.substr(0,i)); };
+}
+function h$jsstringTakeEnd(n, str) {
+    ;
+    if(n <= 0) return '';
+    var l = str.length, i = l-1, ch;
+    if(n >= l) return str;
+    while(n-- && i > 0) {
+ ch = str.charCodeAt(i--);
+ if(((ch|1023)===0xDFFF)) i--;
+    }
+    return (i<0) ? str : str.substr(i+1);
+}
+function h$jsstringDropEnd(n, str) {
+    ;
+    if(n <= 0) return str;
+    var l = str.length, i = l-1, ch;
+    if(n >= l) return '';
+    while(n-- && i > 0) {
+ ch = str.charCodeAt(i--);
+ if(((ch|1023)===0xDFFF)) i--;
+    }
+    return (i<0) ? '' : str.substr(0,i+1);
+}
+function h$jsstringIntercalate(x, ys) {
+    ;
+    var a = [], i = 0;
+    while(((ys).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ if(i) a[i++] = x;
+ a[i++] = ((((ys).d1)).d1);
+ ys = ((ys).d2);
+    }
+    return a.join('');
+}
+function h$jsstringIntersperse(ch, ys) {
+    ;
+    var i = 0, l = ys.length, j = 0, a = [], ych;
+    if(((ch)>=0x10000)) {
+ var ch1 = ((((ch)-0x10000)>>>10)+0xDC00), ch2 = (((ch)&0x3FF)+0xD800);
+ while(j < l) {
+     if(i) {
+  a[i++] = ch1;
+  a[i++] = ch2;
+     }
+     ych = ys.charCodeAt(j++);
+     a[i++] = ych;
+     if(((ych|1023)===0xDBFF)) a[i++] = ys.charCodeAt(j++);
+ }
+    } else {
+ while(j < l) {
+     if(i) a[i++] = ch;
+     ych = ys.charCodeAt(j++);
+     a[i++] = ych;
+     if(((ych|1023)===0xDBFF)) a[i++] = ys.charCodeAt(j++);
+ }
+    }
+    return h$jsstringConvertArray(a);
+}
+function h$jsstringConcat(xs) {
+    ;
+    var a = [], i = 0;
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ a[i++] = ((((xs).d1)).d1);
+ xs = ((xs).d2);
+    }
+    return a.join('');
+}
+var h$jsstringStripPrefix, h$jsstringStripSuffix,
+    h$jsstringIsPrefixOf, h$jsstringIsSuffixOf,
+    h$jsstringIsInfixOf;
+if(String.prototype.startsWith) {
+    h$jsstringStripPrefix = function(p, x) {
+ ;
+ if(x.startsWith(p)) {
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(p.length)))))));
+ } else {
+     return h$baseZCGHCziBaseziNothing;
+ }
+    }
+    h$jsstringIsPrefixOf = function(p, x) {
+ ;
+ return x.startsWith(p);
+    }
+} else {
+    h$jsstringStripPrefix = function(p, x) {
+ ;
+ if(x.indexOf(p) === 0) { // this has worse complexity than it should
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(p.length)))))));
+ } else {
+   return h$baseZCGHCziBaseziNothing;
+ }
+    }
+    h$jsstringIsPrefixOf = function(p, x) {
+ ;
+ return x.indexOf(p) === 0; // this has worse complexity than it should
+    }
+}
+if(String.prototype.endsWith) {
+    h$jsstringStripSuffix = function(s, x) {
+ ;
+ if(x.endsWith(s)) {
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,x.length-s.length)))))));
+ } else {
+   return h$baseZCGHCziBaseziNothing;
+ }
+    }
+    h$jsstringIsSuffixOf = function(s, x) {
+ ;
+ return x.endsWith(s);
+    }
+} else {
+    h$jsstringStripSuffix = function(s, x) {
+ ;
+ var i = x.lastIndexOf(s); // this has worse complexity than it should
+ var l = x.length - s.length;
+ if(i !== -1 && i === l) {
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,l)))))));
+ } else {
+   return h$baseZCGHCziBaseziNothing;
+ }
+    }
+      h$jsstringIsSuffixOf = function(s, x) {
+ ;
+        var i = x.lastIndexOf(s); // this has worse complexity than it should
+ return i !== -1 && i === x.length - s.length;
+    }
+}
+if(String.prototype.includes) {
+    h$jsstringIsInfixOf = function(i, x) {
+        ;
+ return x.includes(i);
+    }
+} else {
+    h$jsstringIsInfixOf = function(i, x) {
+        ;
+ return x.indexOf(i) !== -1; // this has worse complexity than it should
+    }
+}
+function h$jsstringCommonPrefixes(x, y) {
+    ;
+    var lx = x.length, ly = y.length, i = 0, cx;
+    var l = lx <= ly ? lx : ly;
+    if(lx === 0 || ly === 0 || x.charCodeAt(0) !== y.charCodeAt(0)) {
+      return h$baseZCGHCziBaseziNothing;
+    }
+    while(++i<l) {
+ cx = x.charCodeAt(i);
+ if(cx !== y.charCodeAt(i)) {
+     if(((cx|1023)===0xDFFF)) i--;
+     break;
+ }
+    }
+  if(i===0) return h$baseZCGHCziBaseziNothing;
+    return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c3(h$ghczmprimZCGHCziTupleziZLz2cUz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, ((i===lx)?x:((i===ly)?y:x.substr(0,i)))))),((i===lx) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(i))))),((i===ly) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (y.substr(i))))))))));
+}
+function h$jsstringBreakOn(b, x) {
+    ;
+    var i = x.indexOf(b);
+    if(i===-1) {
+        { h$ret1 = (""); return (x); };
+    }
+    if(i===0) {
+        { h$ret1 = (x); return (""); };
+    }
+    { h$ret1 = (x.substr(i)); return (x.substr(0,i)); };
+}
+function h$jsstringBreakOnEnd(b, x) {
+    ;
+    var i = x.lastIndexOf(b);
+  if(i===-1) {
+    { h$ret1 = (x); return (""); };
+    }
+  i += b.length;
+    { h$ret1 = (x.substr(i)); return (x.substr(0,i)); };
+}
+function h$jsstringBreakOnAll1(n, b, x) {
+    ;
+    var i = x.indexOf(b, n);
+    if(i===0) {
+       { h$ret1 = (""); h$ret2 = (x); return (b.length); };
+    }
+    if(i===-1) {
+       { h$ret1 = (null); h$ret2 = (null); return (-1); };
+    }
+    { h$ret1 = (x.substr(0,i)); h$ret2 = (x.substr(i)); return (i+b.length); };
+}
+function h$jsstringBreakOnAll(pat, src) {
+    ;
+    var a = [], i = 0, n = 0, r = h$ghczmprimZCGHCziTypesziZMZN, pl = pat.length;
+    while(true) {
+ var x = src.indexOf(pat, n);
+ if(x === -1) break;
+ a[i++] = (h$c2(h$ghczmprimZCGHCziTupleziZLz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (src.substr(0,x))))),((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (src.substr(x)))))));
+ n = x + pl;
+    }
+    while(--i >= 0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, (a[i]), (r)));
+    return r;
+}
+function h$jsstringSplitOn1(n, p, x) {
+    ;
+    var i = x.indexOf(p, n);
+    if(i === -1) {
+        { h$ret1 = (null); return (-1); };
+    }
+    var r1 = (i==n) ? "" : x.substr(n, i-n);
+    { h$ret1 = (r1); return (i + p.length); };
+}
+function h$jsstringSplitOn(p, x) {
+    ;
+    var a = x.split(p);
+    var r = h$ghczmprimZCGHCziTypesziZMZN, i = a.length;
+    while(--i>=0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (a[i])))), (r)));
+    return r;
+}
+// returns -1 for end of input, start of next token otherwise
+// word in h$ret1
+// this function assumes that there are no whitespace characters >= 0x10000
+function h$jsstringWords1(n, x) {
+    ;
+    var m = n, s = n, l = x.length;
+    if(m >= l) return -1;
+    // skip leading spaces
+    do {
+ if(m >= l) return -1;
+    } while(h$isSpace(x.charCodeAt(m++)));
+    // found start of word
+    s = m - 1;
+    while(m < l) {
+ if(h$isSpace(x.charCodeAt(m++))) {
+     // found end of word
+            var r1 = (m-s<=1) ? "" : x.substr(s,m-s-1);
+            { h$ret1 = (r1); return (m); };
+ }
+    }
+    // end of string
+    if(s < l) {
+        var r1 = s === 0 ? x : x.substr(s);
+        { h$ret1 = (r1); return (m); };
+    }
+    { h$ret1 = (null); return (-1); };
+}
+function h$jsstringWords(x) {
+    ;
+    var a = null, i = 0, n, s = -1, m = 0, w, l = x.length, r = h$ghczmprimZCGHCziTypesziZMZN;
+    outer:
+    while(m < l) {
+ // skip leading spaces
+ do {
+     if(m >= l) { s = m; break outer; }
+ } while(h$isSpace(x.charCodeAt(m++)));
+ // found start of word
+ s = m - 1;
+ while(m < l) {
+     if(h$isSpace(x.charCodeAt(m++))) {
+  // found end of word
+  w = (m-s<=1) ? h$jsstringEmpty
+                             : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(s,m-s-1))));
+  if(i) a[i++] = w; else { a = [w]; i = 1; }
+  s = m;
+  break;
+     }
+ }
+    }
+    // end of string
+    if(s !== -1 && s < l) {
+ w = (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (s === 0 ? x : x.substr(s))));
+ if(i) a[i++] = w; else { a = [w]; i = 1; }
+    }
+    // build resulting list
+    while(--i>=0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, (a[i]), (r)));
+    return r;
+}
+// returns -1 for end of input, start of next token otherwise
+// line in h$ret1
+function h$jsstringLines1(n, x) {
+    ;
+    var m = n, l = x.length;
+    if(n >= l) return -1;
+    while(m < l) {
+ if(x.charCodeAt(m++) === 10) {
+     // found newline
+     if(n > 0 && n === l-1) return -1; // it was the last character
+            var r1 = (m-n<=1) ? "" : x.substr(n,m-n-1);
+            { h$ret1 = (r1); return (m); };
+ }
+    }
+    // end of string
+    { h$ret1 = (x.substr(n)); return (m); };
+}
+function h$jsstringLines(x) {
+    ;
+    var a = null, m = 0, i = 0, l = x.length, s = 0, r = h$ghczmprimZCGHCziTypesziZMZN, w;
+    if(l === 0) return h$ghczmprimZCGHCziTypesziZMZN;
+    outer:
+    while(true) {
+ s = m;
+ do {
+     if(m >= l) break outer;
+ } while(x.charCodeAt(m++) !== 10);
+ w = (m-s<=1) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(s,m-s-1))));
+ if(i) a[i++] = w; else { a = [w]; i = 1; }
+    }
+    if(s < l) {
+ w = (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(s))));
+ if(i) a[i++] = w; else { a = [w]; i = 1; }
+    }
+    while(--i>=0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, (a[i]), (r)));
+    return r;
+}
+function h$jsstringGroup(x) {
+    ;
+    var xl = x.length;
+    if(xl === 0) return h$ghczmprimZCGHCziTypesziZMZN;
+    var i = xl-1, si, ch, s=xl, r=h$ghczmprimZCGHCziTypesziZMZN;
+    var tch = x.charCodeAt(i--);
+    if(((tch|1023)===0xDFFF)) tch = ((((x.charCodeAt(i--))-0xD800)<<10)+(tch)-9216);
+    while(i >= 0) {
+ si = i;
+ ch = x.charCodeAt(i--);
+ if(((ch|1023)===0xDFFF)) {
+     ch = ((((x.charCodeAt(i--))-0xD800)<<10)+(ch)-9216);
+ }
+ if(ch != tch) {
+     tch = ch;
+     r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(si+1,s-si))))), (r)));
+     s = si;
+ }
+    }
+    return (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,s+1))))), (r)));
+}
+function h$jsstringChunksOf1(n, s, x) {
+    ;
+    var m = s, c = 0, l = x.length, ch;
+    if(n <= 0 || l === 0 || s >= l) return -1
+    while(++m < l && ++c < n) {
+ ch = x.charCodeAt(m);
+ if(((ch|1023)===0xDBFF)) ++m;
+    }
+    var r1 = (m >= l && s === c) ? x : x.substr(s,m-s);
+    { h$ret1 = (r1); return (m); };
+}
+function h$jsstringChunksOf(n, x) {
+    ;
+    var l = x.length;
+    if(l===0 || n <= 0) return h$ghczmprimZCGHCziTypesziZMZN;
+    if(l <= n) return (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x)))), (h$ghczmprimZCGHCziTypesziZMZN)));
+    var a = [], i = 0, s = 0, ch, m = 0, c, r = h$ghczmprimZCGHCziTypesziZMZN;
+    while(m < l) {
+ s = m;
+ c = 0;
+ while(m < l && ++c <= n) {
+     ch = x.charCodeAt(m++);
+     if(((ch|1023)===0xDBFF)) ++m;
+ }
+ if(c) a[i++] = x.substr(s, m-s);
+    }
+    while(--i>=0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (a[i])))), (r)));
+    return r;
+}
+function h$jsstringCount(pat, src) {
+    ;
+    var i = 0, n = 0, pl = pat.length, sl = src.length;
+    while(i<sl) {
+ i = src.indexOf(pat, i);
+ if(i===-1) break;
+ n++;
+ i += pl;
+    }
+    return n;
+}
+function h$jsstringReplicate(n, str) {
+    ;
+    if(n === 0 || str == '') return '';
+    if(n === 1) return str;
+    var r = '';
+    do {
+ if(n&1) r+=str;
+        str+=str;
+        n >>= 1;
+    } while(n > 1);
+    return r+str;
+}
+// this does not deal with combining diacritics, Data.Text does not either
+var h$jsstringReverse;
+if(Array.from) {
+    h$jsstringReverse = function(str) {
+ ;
+ return Array.from(str).reverse().join('');
+    }
+} else {
+    h$jsstringReverse = function(str) {
+ ;
+ var l = str.length, a = [], o = 0, i = 0, c, c1, s = '';
+ while(i < l) {
+     c = str.charCodeAt(i);
+     if(((c|1023)===0xDBFF)) {
+  a[i] = str.charCodeAt(i+1);
+  a[i+1] = c;
+  i += 2;
+     } else a[i++] = c;
+     if(i-o > 60000) {
+  s = String.fromCharCode.apply(null, a.reverse()) + s;
+  o = -i;
+  a = [];
+     }
+ }
+ return (i===0) ? s : String.fromCharCode.apply(null,a.reverse()) + s;
+    }
+}
+function h$jsstringUnpack(str) {
+    ;
+    var r = h$ghczmprimZCGHCziTypesziZMZN, i = str.length-1, c;
+    while(i >= 0) {
+ c = str.charCodeAt(i--);
+ if(((c|1023)===0xDFFF)) c = ((((str.charCodeAt(i--))-0xD800)<<10)+(c)-9216)
+ r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, (c), (r)));
+    }
+    return r;
+}
+function h$jsstringDecI64(hi,lo) {
+    ;
+    var lo0 = (lo < 0) ? lo+4294967296:lo;
+    if(hi < 0) {
+ if(hi === -1) return ''+(lo0-4294967296);
+ lo0 = 4294967296 - lo0;
+ var hi0 = -1 - hi;
+ var x0 = hi0 * 967296;
+ var x1 = (lo0 + x0) % 1000000;
+ var x2 = hi0*4294+Math.floor((x0+lo0-x1)/1000000);
+ return '-' + x2 + h$jsstringDecIPadded6(x1);
+    } else {
+ if(hi === 0) return ''+lo0;
+ var x0 = hi * 967296;
+ var x1 = (lo0 + x0) % 1000000;
+ var x2 = hi*4294+Math.floor((x0+lo0-x1)/1000000);
+ return '' + x2 + h$jsstringDecIPadded6(x1);
+    }
+}
+function h$jsstringDecW64(hi,lo) {
+    ;
+    var lo0 = (lo < 0) ? lo+4294967296 : lo;
+    if(hi === 0) return ''+lo0;
+    var hi0 = (hi < 0) ? hi+4294967296 : hi;
+    var x0 = hi0 * 967296;
+    var x1 = (lo0 + x0) % 1000000;
+    var x2 = hi0*4294+Math.floor((x0+lo0-x1)/1000000);
+    return '' + x2 + h$jsstringDecIPadded6(x1);
+}
+function h$jsstringHexI64(hi,lo) {
+    var lo0 = lo<0 ? lo+4294967296 : lo;
+    if(hi === 0) return lo0.toString(16);
+    return ((hi<0)?hi+4294967296:hi).toString(16) + h$jsstringHexIPadded8(lo0);
+}
+function h$jsstringHexW64(hi,lo) {
+    var lo0 = lo<0 ? lo+4294967296 : lo;
+    if(hi === 0) return lo0.toString(16);
+    return ((hi<0)?hi+4294967296:hi).toString(16) + h$jsstringHexIPadded8(lo0);
+}
+// n in [0, 1000000000)
+function h$jsstringDecIPadded9(n) {
+    ;
+    if(n === 0) return '000000000';
+    var pad = (n>=100000000)?'':
+              (n>=10000000)?'0':
+              (n>=1000000)?'00':
+              (n>=100000)?'000':
+              (n>=10000)?'0000':
+              (n>=1000)?'00000':
+              (n>=100)?'000000':
+              (n>=10)?'0000000':
+                     '00000000';
+    return pad+n;
+}
+// n in [0, 1000000)
+function h$jsstringDecIPadded6(n) {
+    ;
+    if(n === 0) return '000000';
+    var pad = (n>=100000)?'':
+              (n>=10000)?'0':
+              (n>=1000)?'00':
+              (n>=100)?'000':
+              (n>=10)?'0000':
+                     '00000';
+    return pad+n;
+}
+// n in [0, 2147483648)
+function h$jsstringHexIPadded8(n) {
+    ;
+   if(n === 0) return '00000000';
+   var pad = (n>=0x10000000)?'':
+             (n>=0x1000000)?'0':
+             (n>=0x100000)?'00':
+             (n>=0x10000)?'000':
+             (n>=0x1000)?'0000':
+             (n>=0x100)?'00000':
+             (n>=0x10)?'000000':
+                      '0000000';
+    return pad+n.toString(16);
+}
+function h$jsstringZeroes(n) {
+    var r;
+    switch(n&7) {
+ case 0: r = ''; break;
+ case 1: r = '0'; break;
+ case 2: r = '00'; break;
+ case 3: r = '000'; break;
+ case 4: r = '0000'; break;
+ case 5: r = '00000'; break;
+ case 6: r = '000000'; break;
+ case 7: r = '0000000';
+    }
+    for(var i=n>>3;i>0;i--) r = r + '00000000';
+    return r;
+}
+function h$jsstringDoubleToFixed(decs, d) {
+    if(decs >= 0) {
+ if(Math.abs(d) < 1e21) {
+     var r = d.toFixed(Math.min(20,decs));
+     if(decs > 20) r = r + h$jsstringZeroes(decs-20);
+     return r;
+ } else {
+     var r = d.toExponential();
+     var ei = r.indexOf('e');
+     var di = r.indexOf('.');
+     var e = parseInt(r.substr(ei+1));
+     return r.substring(0,di) + r.substring(di,ei) + h$jsstringZeroes(di-ei+e) +
+                   ((decs > 0) ? ('.' + h$jsstringZeroes(decs)) : '');
+ }
+    }
+    var r = Math.abs(d).toExponential();
+    var ei = r.indexOf('e');
+    var e = parseInt(r.substr(ei+1));
+    var m = d < 0 ? '-' : '';
+    r = r.substr(0,1) + r.substring(2,ei);
+    if(e >= 0) {
+ return (e > r.length) ? m + r + h$jsstringZeroes(r.length-e-1) + '.0'
+                       : m + r.substr(0,e+1) + '.' + r.substr(e+1);
+    } else {
+ return m + '0.' + h$jsstringZeroes(-e-1) + r;
+    }
+}
+function h$jsstringDoubleToExponent(decs, d) {
+    var r;
+    if(decs ===-1) {
+ r = d.toExponential().replace('+','');
+    } else {
+ r = d.toExponential(Math.max(1, Math.min(20,decs))).replace('+','');
+    }
+    if(r.indexOf('.') === -1) {
+ r = r.replace('e', '.0e');
+    }
+    if(decs > 20) r = r.replace('e', h$jsstringZeroes(decs-20)+'e');
+    return r;
+}
+function h$jsstringDoubleGeneric(decs, d) {
+    var r;
+    if(decs === -1) {
+ r = d.toString(10).replace('+','');
+    } else {
+ r = d.toPrecision(Math.max(decs+1,1)).replace('+','');
+    }
+    if(decs !== 0 && r.indexOf('.') === -1) {
+ if(r.indexOf('e') !== -1) {
+     r = r.replace('e', '.0e');
+ } else {
+     r = r + '.0';
+ }
+    }
+    return r;
+}
+function h$jsstringAppend(x, y) {
+    ;
+    return x+y;
+}
+function h$jsstringCompare(x, y) {
+    ;
+    return (x<y)?-1:((x>y)?1:0);
+}
+function h$jsstringUnlines(xs) {
+    var r = '';
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ r = r + ((((xs).d1)).d1) + '\n';
+ xs = ((xs).d2);
+    }
+    return r;
+}
+function h$jsstringUnwords(xs) {
+    if(((xs).f === h$ghczmprimZCGHCziTypesziZMZN_con_e)) return '';
+    var r = ((((xs).d1)).d1);
+    xs = ((xs).d2);
+    while(((xs).f === h$ghczmprimZCGHCziTypesziZC_con_e)) {
+ r = r + ' ' + ((((xs).d1)).d1);
+ xs = ((xs).d2);
+    }
+    return r;
+}
+function h$jsstringReplace(pat, rep, src) {
+    ;
+    var r = src.replace(pat, rep, 'g');
+    // the 'g' flag is not supported everywhere, check and fall back if necessary
+    if(r.indexOf(pat) !== -1) {
+ r = src.split(pat).join(rep);
+    }
+    return r;
+}
+function h$jsstringReplicateChar(n, ch) {
+    ;
+    return h$jsstringReplicate(n, h$jsstringSingleton(ch));
+}
+function h$jsstringIsInteger(str) {
+    return /^-?\d+$/.test(str);
+}
+function h$jsstringIsNatural(str) {
+    return /^\d+$/.test(str);
+}
+function h$jsstringReadInt(str) {
+    if(!/^-?\d+/.test(str)) return null;
+    var x = parseInt(str, 10);
+    var x0 = x|0;
+    return (x===x0) ? x0 : null;
+}
+function h$jsstringLenientReadInt(str) {
+    var x = parseInt(str, 10);
+    var x0 = x|0;
+    return (x===x0) ? x0 : null;
+}
+function h$jsstringReadWord(str) {
+  if(!/^\d+/.test(str)) return null;
+  var x = parseInt(str, 10);
+  var x0 = x|0;
+  if(x0<0) return (x===x0+2147483648) ? x0 : null;
+  else return (x===x0) ? x0 : null;
+}
+function h$jsstringReadDouble(str) {
+    return parseFloat(str, 10);
+}
+function h$jsstringLenientReadDouble(str) {
+    return parseFloat(str, 10);
+}
+function h$jsstringReadInteger(str) {
+  ;
+  if(!/^(-)?\d+$/.test(str)) {
+    return null;
+  } else if(str.length <= 9) {
+    return (h$c2(h$integerzmgmpZCGHCziIntegerziTypeziSzh_con_e, (parseInt(str, 10))));;
+  } else {
+    return (h$c2(h$integerzmgmpZCGHCziIntegerziTypeziJzh_con_e, 0, (new BigInteger(str, 10))));;
+  }
+}
+function h$jsstringReadInt64(str) {
+  if(!/^(-)?\d+$/.test(str)) {
+      { h$ret1 = (0); h$ret2 = (0); return (0); };
+  }
+  if(str.charCodeAt(0) === 45) { // '-'
+    return h$jsstringReadValue64(str, 1, true);
+  } else {
+    return h$jsstringReadValue64(str, 0, false);
+  }
+}
+function h$jsstringReadWord64(str) {
+  if(!/^\d+$/.test(str)) {
+    { h$ret1 = (0); h$ret2 = (0); return (0); };
+  }
+  return h$jsstringReadValue64(str, 0, false);
+}
+var h$jsstringLongs = null;
+function h$jsstringReadValue64(str, start, negate) {
+  var l = str.length, i = start;
+  while(i < l) {
+    if(str.charCodeAt(i) !== 48) break;
+    i++;
+  }
+  if(i >= l) { h$ret1 = (0); h$ret2 = (0); return (1); }; // only zeroes
+  if(h$jsstringLongs === null) {
+    h$jsstringLongs = [];
+    for(var t=10; t<=1000000000; t*=10) {
+      h$jsstringLongs.push(goog.math.Long.fromInt(t));
+    }
+  }
+  var li = l-i;
+  if(li < 10 && !negate) {
+    { h$ret1 = (0); h$ret2 = (parseInt(str.substr(i), 10)); return (1); };
+  }
+  var r = goog.math.Long.fromInt(parseInt(str.substr(li,9),10));
+  li += 9;
+  while(li < l) {
+    r = r.multiply(h$jsstringLongs[Math.min(l-li-1,8)])
+         .add(goog.math.Long.fromInt(parseInt(str.substr(li,9), 10)));
+    li += 9;
+  }
+  if(negate) {
+    r = r.negate();
+  }
+  { h$ret1 = (r.getHighBits()); h$ret2 = (r.getLowBits()); return (1); };
+}
+function h$jsstringExecRE(i, str, re) {
+    re.lastIndex = i;
+    var m = re.exec(str);
+    if(m === null) return -1;
+    var a = [], x, j = 1, r = h$ghczmprimZCGHCziTypesziZMZN;
+    while(true) {
+ x = m[j];
+ if(typeof x === 'undefined') break;
+ a[j-1] = x;
+ j++;
+    }
+    j-=1;
+    while(--j>=0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (a[j])))), (r)));
+    { h$ret1 = (m[0]); h$ret2 = (r); return (m.index); };
+}
+function h$jsstringReplaceRE(pat, replacement, str) {
+    return str.replace(pat, replacement);
+}
+function h$jsstringSplitRE(limit, re, str) {
+    re.lastIndex = i;
+    var s = (limit < 0) ? str.split(re) : str.split(re, limit);
+    var i = s.length, r = h$ghczmprimZCGHCziTypesziZMZN;
+    while(--i>=0) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (a[i])))), (r)));
+    return r;
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+/*
+ * Functions that directly access JavaScript strings, ignoring character
+ * widths and surrogate pairs.
+ */
+function h$jsstringRawChunksOf(k, x) {
+    var l = x.length;
+    if(l === 0) return h$ghczmprimZCGHCziTypesziZMZN;
+    if(l <= k) return (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x)))), (h$ghczmprimZCGHCziTypesziZMZN)));
+    var r=h$ghczmprimZCGHCziTypesziZMZN;
+    for(var i=ls-k;i>=0;i-=k) r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(i,i+k))))), (r)));
+    return r;
+}
+function h$jsstringRawSplitAt(k, x) {
+    if(k === 0) return (h$c2(h$ghczmprimZCGHCziTupleziZLz2cUZR_con_e,(h$jsstringEmpty),((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x))))));
+    if(k >= x.length) return (h$c2(h$ghczmprimZCGHCziTupleziZLz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x)))),(h$jsstringEmpty)));
+    return (h$c2(h$ghczmprimZCGHCziTupleziZLz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,k))))),((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(k)))))));
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$foreignListProps(o) {
+    var r = HS_NIL;
+    if(typeof o === 'undefined' || o === null) return null;
+    throw "h$foreignListProps";
+/*    for(var p in o) {
+
+    } */
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// conversion between JavaScript string and Data.Text
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+/*
+  convert a Data.Text buffer with offset/length to a JavaScript string
+ */
+function h$textToString(arr, off, len) {
+    var a = [];
+    var end = off+len;
+    var k = 0;
+    var u1 = arr.u1;
+    var s = '';
+    for(var i=off;i<end;i++) {
+ var cc = u1[i];
+ a[k++] = cc;
+ if(k === 60000) {
+     s += String.fromCharCode.apply(this, a);
+     k = 0;
+     a = [];
+ }
+    }
+    return s + String.fromCharCode.apply(this, a);
+}
+/*
+   convert a JavaScript string to a Data.Text buffer, second return
+   value is length
+ */
+function h$textFromString(s) {
+    var l = s.length;
+    var b = h$newByteArray(l * 2);
+    var u1 = b.u1;
+    for(var i=l-1;i>=0;i--) u1[i] = s.charCodeAt(i);
+    { h$ret1 = (l); return (b); };
+}
+function h$lazyTextToString(txt) {
+    var s = '';
+    while(((txt).f.a === 2)) {
+        var head = ((txt));
+        s += h$textToString(((head).d1), ((head).d2.d1), ((head).d2.d2));
+        txt = ((txt).d2.d3);
+    }
+    return s;
+}
+function h$safeTextFromString(x) {
+    if(typeof x !== 'string') {
+ { h$ret1 = (0); return (null); };
+    }
+    return h$textFromString(x);
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+// values defined in Gen2.ClosureInfo
+// thread status
+/*
+ * low-level heap object manipulation macros
+ */
+// GHCJS.Prim.JSVal
+// GHCJS.Prim.JSException
+// Exception dictionary for JSException
+// SomeException
+// GHC.Ptr.Ptr
+// GHC.Integer.GMP.Internals
+// Data.Maybe.Maybe
+// #define HS_NOTHING h$nothing
+// Data.List
+// Data.Text
+// Data.Text.Lazy
+// black holes
+// can we skip the indirection for black holes?
+// resumable thunks
+// general deconstruction
+// retrieve  a numeric value that's possibly stored as an indirection
+// generic lazy values
+// generic data constructors and selectors
+// unboxed tuple returns
+// #define RETURN_UBX_TUP1(x) return x;
+function h$allProps(o) {
+    var a = [], i = 0;
+    for(var p in o) a[i++] = p;
+    return a;
+}
+function h$listProps(o) {
+    var r = h$ghczmprimZCGHCziTypesziZMZN;
+    for(var p in o) { r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (p)))), (r))); }
+    return r;
+}
+function h$listAssocs(o) {
+    var r = h$ghczmprimZCGHCziTypesziZMZN;
+    for(var p in o) { r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, ((h$c2(h$ghczmprimZCGHCziTupleziZLz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (p)))),((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (o[p]))))))), (r))); }
+    return r;
+}
+function h$isNumber(o) {
+    return typeof(o) === 'number';
+}
+// returns true for null, but not for functions and host objects
+function h$isObject(o) {
+    return typeof(o) === 'object';
+}
+function h$isString(o) {
+    return typeof(o) === 'string';
+}
+function h$isSymbol(o) {
+    return typeof(o) === 'symbol';
+}
+function h$isBoolean(o) {
+    return typeof(o) === 'boolean';
+}
+function h$isFunction(o) {
+    return typeof(o) === 'function';
+}
+function h$jsTypeOf(o) {
+    var t = typeof(o);
+    if(t === 'undefined') return 0;
+    if(t === 'object') return 1;
+    if(t === 'boolean') return 2;
+    if(t === 'number') return 3;
+    if(t === 'string') return 4;
+    if(t === 'symbol') return 5;
+    if(t === 'function') return 6;
+    return 7; // other, host object etc
+}
+/*
+        -- 0 - null, 1 - integer,
+        -- 2 - float, 3 - bool,
+        -- 4 - string, 5 - array
+        -- 6 - object
+*/
+function h$jsonTypeOf(o) {
+    if (!(o instanceof Object)) {
+        if (o == null) {
+            return 0;
+        } else if (typeof o == 'number') {
+            if (h$isInteger(o)) {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else if (typeof o == 'boolean') {
+            return 3;
+        } else {
+            return 4;
+        }
+    } else {
+        if (Object.prototype.toString.call(o) == '[object Array]') {
+            // it's an array
+            return 5;
+        } else if (!o) {
+            // null 
+            return 0;
+        } else {
+            // it's an object
+            return 6;
+        }
+    }
+}
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+/* We do not support C11 <threads.h>.  */
+function h$sendXHR(xhr, d, cont) {
+    xhr.addEventListener('error', function () {
+ cont(2);
+    });
+    xhr.addEventListener('abort', function() {
+ cont(1);
+    });
+    xhr.addEventListener('load', function() {
+ cont(0);
+    });
+    if(d) {
+ xhr.send(d);
+    } else {
+ xhr.send();
+    }
 }
