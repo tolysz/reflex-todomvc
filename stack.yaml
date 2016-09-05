@@ -1,15 +1,16 @@
 flags: {}
 
-resolver: lts-6.13
-compiler: ghcjs-0.2.0.9006013_ghc-7.10.3
+resolver: lts-6.15
+compiler: ghcjs-0.2.0.9006015_ghc-7.10.3
 
 compiler-check: match-exact
 
 setup-info:
   ghcjs:
     source:
-      ghcjs-0.2.0.9006013_ghc-7.10.3:
-         url: "https://tolysz.org/ghcjs/lts-6.13-9006013.tar.gz"
+      ghcjs-0.2.0.9006015_ghc-7.10.3:
+         url: "https://tolysz.org/ghcjs/lts-6.15-9006015.tar.gz"
+         sha1: 4d513006622bf428a3c983ca927837e3d14ab687
 
 allow-newer: true
 
@@ -18,14 +19,11 @@ packages:
 - location:
     git: https://github.com/ryantrinkle/reflex.git
     commit: f8338f6b68c9be4e8dcddbbab2098aeffa018535
-# 3a7fb30dde160bc31c0bba4f42f7666ea6ca054a
   extra-dep: true
 
-#- location: '../reflex-dom'
 - location: 
     git: https://github.com/ryantrinkle/reflex-dom.git
     commit: e8b7d31fd2b6a8173e51096b7591ec346e33ad85
-# 5318d581fe3ef7b2b0f70ac352d6c56700124b98
   extra-dep: true
 - location:
      git: https://github.com/isomorphism/these.git
@@ -33,11 +31,12 @@ packages:
 - location:
      git: https://github.com/reflex-frp/reflex-dom-contrib.git
      commit: d07180518168fb68a9ac2ec2df71f670e8d85e6b
+  extra-dep: true
 
 extra-deps:
-- ref-tf-0.4
-- these-0.6.1.0
-- ghcjs-dom-0.2.4.0
+- ref-tf-0.4.0.1
+#- these-0.6.1.0
+#- ghcjs-dom-0.2.4.0
 #- ghcjs-dom-jsffi-0.3.1.0
 # - ghcjs-dom-0.2.3.0
 #- stateWriter-0.2.6

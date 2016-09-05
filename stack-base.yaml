@@ -2,5 +2,5 @@ flags: {}
 packages: []
 system-ghc: false
 extra-deps: []
-resolver: lts-6.13
+resolver: lts-6.15
 allow-newer: true
